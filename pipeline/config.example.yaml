@@ -1,0 +1,337 @@
+# Pipeline configuration.
+# Edit here, not in the code.
+#
+# countries      - ISO2 codes. email_allowed=false blocks the email channel for
+#                  that country: cold B2B email has no valid legal basis there,
+#                  so the pipeline refuses to emit a lead on that channel.
+# categories     - "fit" is how likely that business type is to buy a website,
+#                  0-20. A category with fit 0 never becomes a lead.
+# tiers          - score cut-offs. A is the top of the queue.
+# cities         - pilot areas. bbox = [xmin, ymin, xmax, ymax].
+overture:
+  release: 2026-09-23.1
+  bucket: s3://overturemaps-us-west-2/release/{release}/theme=places/type=place/*.parquet
+countries:
+  US:
+    lang: en
+    email_allowed: true
+  MX:
+    lang: es
+    email_allowed: true
+  CA:
+    lang: en
+    email_allowed: true
+  AR:
+    lang: es
+    email_allowed: true
+  CO:
+    lang: es
+    email_allowed: true
+  CL:
+    lang: es
+    email_allowed: true
+  BR:
+    lang: pt
+    email_allowed: true
+categories:
+  restaurant:
+    fit: 20
+  cafe:
+    fit: 18
+  bar:
+    fit: 18
+  bakery:
+    fit: 18
+  fast_food_restaurant:
+    fit: 14
+  food_truck:
+    fit: 12
+  caterer:
+    fit: 18
+  hair_salon:
+    fit: 20
+  beauty_salon:
+    fit: 20
+  barber:
+    fit: 20
+  nail_salon:
+    fit: 20
+  spa:
+    fit: 18
+  massage_service:
+    fit: 18
+  tattoo_parlor:
+    fit: 18
+  dentist:
+    fit: 20
+  doctor:
+    fit: 18
+  chiropractor:
+    fit: 18
+  physical_therapy:
+    fit: 18
+  veterinarian:
+    fit: 18
+  pet_groomer:
+    fit: 18
+  pet_store:
+    fit: 14
+  attorney_or_law_firm:
+    fit: 20
+  legal_service:
+    fit: 16
+  accountant:
+    fit: 18
+  tax_service:
+    fit: 16
+  real_estate_agent:
+    fit: 18
+  real_estate_service:
+    fit: 14
+  property_management:
+    fit: 16
+  contractor:
+    fit: 18
+  electrician:
+    fit: 18
+  plumber:
+    fit: 18
+  roofing_contractor:
+    fit: 18
+  hvac_contractor:
+    fit: 18
+  landscaping_service:
+    fit: 16
+  cleaning_service:
+    fit: 16
+  auto_repair:
+    fit: 18
+  auto_body_shop:
+    fit: 18
+  car_dealer:
+    fit: 14
+  fitness_center:
+    fit: 18
+  yoga_studio:
+    fit: 18
+  martial_arts_school:
+    fit: 16
+  school:
+    fit: 12
+  tutoring_service:
+    fit: 14
+  hotel:
+    fit: 16
+  bed_and_breakfast:
+    fit: 16
+  travel_agency:
+    fit: 16
+  event_venue:
+    fit: 16
+  photographer:
+    fit: 18
+  florist:
+    fit: 16
+  jewelry_store:
+    fit: 14
+  furniture_store:
+    fit: 14
+  clothing_store:
+    fit: 12
+  hardware_store:
+    fit: 12
+  moving_company:
+    fit: 16
+  storage_facility:
+    fit: 14
+  logistics_service:
+    fit: 14
+  printing_service:
+    fit: 14
+  marketing_agency:
+    fit: 6
+  software_development:
+    fit: 4
+  financial_service:
+    fit: 6
+  bank:
+    fit: 0
+  government_office:
+    fit: 0
+  parking:
+    fit: 0
+  gas_station:
+    fit: 2
+  bridge:
+    fit: 0
+  monument:
+    fit: 0
+probe:
+  timeout_s: 12
+  attempts: 2
+  concurrency: 24
+  user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36
+  max_page_kb: 3500
+social_domains:
+- instagram.com
+- facebook.com
+- m.facebook.com
+- fb.com
+- twitter.com
+- x.com
+- tiktok.com
+- youtube.com
+- linkedin.com
+- pinterest.com
+- snapchat.com
+- wa.me
+- api.whatsapp.com
+- linktr.ee
+- beacons.ai
+- bio.link
+- linkin.bio
+- scontent.xx.fbcdn.net
+- business.facebook.com
+aggregator_domains:
+- yelp.com
+- tripadvisor.com
+- doordash.com
+- ubereats.com
+- grubhub.com
+- opentable.com
+- booking.com
+- expedia.com
+- airbnb.com
+- booksy.com
+- square.site
+- toasttab.com
+- clover.com
+- menu.com
+- allmenus.com
+- foursquare.com
+- mapquest.com
+- yellowpages.com
+- angi.com
+- thumbtack.com
+builder_domains:
+- wixsite.com
+- sites.google.com
+- business.site
+- godaddysites.com
+- weebly.com
+- wordpress.com
+- blogspot.com
+- square.site
+- webnode.com
+- jimdosite.com
+- strikingly.com
+- carrd.co
+- notion.site
+shortener_domains:
+- bit.ly
+- tinyurl.com
+- ow.ly
+- t.co
+- goo.gl
+- buff.ly
+- shorturl.at
+- rb.gy
+- cutt.ly
+- is.gd
+- v.gd
+- t.ly
+parked_markers:
+- buy this domain
+- domain is for sale
+- this domain is parked
+- domain parking
+- sedoparking
+- afternic
+- hugedomains
+- godaddy.com/domainfind
+- domain has expired
+- este dominio esta a la venta
+- dominio en venta
+- página en construcción
+placeholder_markers:
+- welcome to nginx
+- apache2 ubuntu default page
+- iis windows server
+- index of /
+- it works!
+- coming soon
+- under construction
+- em construção
+- en construcción
+- próximamente
+- site em manutenção
+- default web site page
+- plesk
+- cpanel
+- this site is temporarily unavailable
+- account suspended
+- suspended page
+- hosting expired
+waf_markers:
+- cloudflare
+- attention required
+- just a moment
+- cf-error
+- akamai
+- incapsula
+- sucuri
+- ddos protection
+score_weights:
+  site_gap: 45
+  contact: 25
+  fit: 20
+  freshness: 10
+site_gap_points:
+  NO_WEBSITE: 40
+  DOMAIN_DEAD: 38
+  HTTP_ERROR: 38
+  PARKED: 36
+  TIMEOUT: 36
+  TLS_INVALID: 34
+  PLACEHOLDER: 34
+  SOCIAL_ONLY: 32
+  AGGREGATOR_ONLY: 30
+  BUILDER_FREE: 22
+  NOT_MOBILE: 14
+  OK: 0
+  INDETERMINADO: 0
+lead_states:
+- NO_WEBSITE
+- DOMAIN_DEAD
+- HTTP_ERROR
+- PARKED
+- TIMEOUT
+- TLS_INVALID
+- PLACEHOLDER
+- SOCIAL_ONLY
+- AGGREGATOR_ONLY
+- BUILDER_FREE
+- NOT_MOBILE
+tiers:
+  A: 88
+  B: 72
+  C: 50
+cities:
+- name: Miami-Dade (US)
+  country: US
+  region: FL
+  locality: Miami
+  bbox:
+  - -80.32
+  - 25.7
+  - -80.13
+  - 25.88
+- name: Guadalajara (MX)
+  country: MX
+  region: Jalisco
+  locality: Guadalajara
+  bbox:
+  - -103.42
+  - 20.61
+  - -103.28
+  - 20.73
