@@ -16,7 +16,7 @@ Map datasets give you a `websites` field. It lies constantly:
 - It points at **free builders** that shut down (Google killed `business.site`).
 - It returns **403 because of a WAF** — the site is fine, the bot is blocked.
 
-Treating any of those as "no website" produces false positives, and a false positive burns the conversation: you open with *"your site is down"* and the owner replies *"it works fine here"*. So the classifier **opens every URL**, follows redirects, reads the HTML and assigns one of 12 states — and when it sees a WAF it returns `INDETERMINADO` instead of guessing.
+Treating any of those as "no website" produces false positives, and a false positive burns the conversation: you open with *"your site is down"* and the owner replies *"it works fine here"*. So the classifier **opens every URL**, follows redirects, reads the HTML and assigns one of 13 states — and when it sees a WAF it returns `INDETERMINADO` instead of guessing.
 
 ---
 
@@ -27,7 +27,7 @@ collect.py  ->  probe.py  ->  score.py  ->  publish.py
    |             |             |             |
 Overture       opens each    dedupes,      upserts into
 Maps via       URL, reads    scores 0-100, the CRM API
-DuckDB         HTML, 12      assigns       in batches
+DuckDB         HTML, 13      assigns       in batches
 (parquet)      states        tiers         of 200
 ```
 
@@ -80,7 +80,7 @@ DuckDB must be on `PATH` (or set `DUCKDB_BIN`).
 
 ---
 
-## The 12 states
+## The 13 states
 
 | State | Meaning | Scores as |
 |---|---|---|
@@ -95,7 +95,8 @@ DuckDB must be on `PATH` (or set `DUCKDB_BIN`).
 | `AGGREGATOR_ONLY` | The "site" is a delivery listing | 30 |
 | `BUILDER_FREE` | Free builder site, no custom domain | 22 |
 | `NOT_MOBILE` | Loads, but no viewport / huge page | 14 |
-| `INDETERMINADO` | WAF or 403 — **never** scored as dead | 0 |
+| `INDETERMINADO` | WAF or 403 — **never** scored as dead | 0 (review queue) |
+| `OK` | Loads, has a viewport, looks alive | 0 (not a lead) |
 
 `INDETERMINADO` is the important one. A bot that calls a Cloudflare-protected site "dead" is wrong, and being wrong once costs the whole conversation.
 
@@ -108,20 +109,36 @@ Run against Overture Maps across Brazil, the US, Mexico, Colombia, Argentina, Ch
 | Metric | Value |
 |---|---|
 | Businesses collected | **293,589** |
-| Businesses whose site was checked | 2,700+ hands-on probes |
+| Businesses whose site was opened and checked | **31,442** |
 | Leads scored and loaded into the CRM | **17,857** |
+| Leads in the top tier | 2,840 |
 | Categories with a fit weight | 66 |
 | Cities configured | 46 |
 
-Distribution of site states in one 1,200-business run:
+Site state across every business checked (deduplicated by business id):
 
-```
-NO_WEBSITE     432      DOMAIN_DEAD    139      SOCIAL_ONLY     67
-NOT_MOBILE      49      HTTP_ERROR      39      PLACEHOLDER     24
-TIMEOUT         13      BUILDER_FREE     4      TLS_INVALID      2
-```
+| State | Count | Share |
+|---|---|---|
+| `NO_WEBSITE` | 13,121 | 41.7% |
+| `OK` | 5,955 | 18.9% |
+| `DOMAIN_DEAD` | 3,736 | 11.9% |
+| `SOCIAL_ONLY` | 3,054 | 9.7% |
+| `INDETERMINADO` | 2,119 | 6.7% |
+| `HTTP_ERROR` | 1,035 | 3.3% |
+| `NOT_MOBILE` | 953 | 3.0% |
+| `TIMEOUT` | 682 | 2.2% |
+| `PLACEHOLDER` | 513 | 1.6% |
+| `BUILDER_FREE` | 167 | 0.5% |
+| `AGGREGATOR_ONLY` | 44 | 0.1% |
+| `PARKED` | 33 | 0.1% |
+| `TLS_INVALID` | 30 | 0.1% |
 
-Two thirds of the businesses in that run had **no website or a dead one**. That is the thesis of the project: the market is not short of plumbers, it is short of plumbers with a working website.
+**74% of them had no website or a broken one.** That is the thesis of the project: the
+market is not short of plumbers, it is short of plumbers with a working website.
+
+The `INDETERMINADO` row is why the classifier does not simply say "dead": 6.7% of the base
+sat behind a WAF and had to be left unjudged rather than scored as dead. Guessing there
+would have manufactured 2,119 false positives.
 
 ---
 
